@@ -8,11 +8,19 @@
 
                     </div>
                     <div class="flex space-x-2 items-center">
-                        @if (auth()->user()->student->status != 'approved')
+                        @if (auth()->user()->student->status == 'null')
                             <x-button label="SUMBIT FORM" wire:click="submitApplication" right-icon="external-link" md
                                 rounded dark class="font-semibold" />
                             <x-button label="EDIT FORM" right-icon="pencil-alt" md rounded positive
                                 class="font-semibold" />
+                        @endif
+
+                        @if (auth()->user()->student->status == 'pending')
+                            <x-badge label="Pending" warning lg rounded />
+                        @elseif (auth()->user()->student->status == 'approved')
+                            <x-badge label="Approved" positive lg rounded />
+                        @elseif (auth()->user()->student->status == 'disapproved')
+                            <x-badge label="Disapproved" negative lg rounded />
                         @endif
 
                     </div>

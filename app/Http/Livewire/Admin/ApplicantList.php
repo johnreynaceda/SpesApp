@@ -14,6 +14,11 @@ use Filament\Tables\Actions\Action;
 class ApplicantList extends Component implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
+
+    public $view_modal = false;
+    public $applicant_data;
+    public $applicant_documents;
+
     protected function getTableQuery(): Builder
     {
         return Student::query()->where('status', 'pending');
@@ -37,6 +42,13 @@ class ApplicantList extends Component implements Tables\Contracts\HasTable
     protected function getTableActions(): array
     {
         return [
+            Action::make('view')->color('warning')->label('View Records')->button()->icon('heroicon-o-document-text')->action(
+                function ($record) {
+                    $this->applicant_data = $record;
+                    $this->applicant_documents = $record->user->document;
+                    $this->view_modal = true;
+                }
+            ),
             Action::make('approve')->color('success')->button()->icon('heroicon-o-thumb-up')->action(
                 function ($record) {
                     $record->update([

@@ -16,6 +16,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
+use WireUi\Traits\Actions;
 
 
 class Profile extends Component implements Tables\Contracts\HasTable
@@ -27,6 +28,8 @@ class Profile extends Component implements Tables\Contracts\HasTable
     public $father_firstname, $father_middlename, $father_lastname, $father_contact;
     public $mother_firstname, $mother_middlename, $mother_lastname, $mother_contact;
     public $degree, $year;
+
+    use Actions;
 
     protected function getFormSchema(): array
     {
@@ -172,9 +175,35 @@ class Profile extends Component implements Tables\Contracts\HasTable
 
     public function submitApplication()
     {
-        $data = Student::where('user_id', auth()->user()->id)->first();
-        $data->update([
-            'status' => 'pending',
-        ]);
+
+        $if_not_null = Document::where('user_id', auth()->user()->id)->where(function ($query) {
+            $query->whereNotNull('photo_path')
+                ->whereNotNull('valid_id_path')
+                ->whereNotNull('document_path');
+        })->get();
+
+        if ($if_not_null->count() > 0) {
+            $data = Student::where('user_id', auth()->user()->id)->first();
+            $data->update([
+                'status' => 'pending',
+            ]);
+            $this->dialog()->success(
+                $title = 'Submit Successfully',
+                $description = 'Your data has been submitted',
+            );
+        } else {
+            $data = Student::where('user_id', auth()->user()->id)->first();
+
+            $this->dialog()->error(
+                $title = 'Submit not Applicable',
+                $description = 'Please upload the requirements first.',
+            );
+
+
+
+
+        }
+
+
     }
 }

@@ -26,6 +26,7 @@
     <div class="fixed -bottom-64 -left-64">
         <img src="{{ asset('images/spes_logo.png') }}" class="opacity-10" alt="">
     </div>
+    <x-dialog z-index="z-50" blur="md" align="center" />
     <div class="border-b bg-white sticky top-0 z-50">
         <div class="w-full mx-auto bg-white  2xl:max-w-7xl">
             <div x-data="{ open: false }"
