@@ -5,19 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Passer extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function user()
+    public function student()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function passer()
-    {
-        return $this->hasOne(Passer::class);
+        return $this->belongsTo(Student::class);
     }
 }

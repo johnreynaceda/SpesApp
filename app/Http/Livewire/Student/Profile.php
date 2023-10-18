@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Student;
 
 use App\Models\Document;
+use App\Models\Passer;
 use App\Models\Student;
 use Livewire\Component;
 use Filament\Tables;
@@ -104,7 +105,9 @@ class Profile extends Component implements Tables\Contracts\HasTable
 
     public function render()
     {
-        return view('livewire.student.profile');
+        return view('livewire.student.profile', [
+            'passers' => Passer::all(),
+        ]);
     }
 
     public function submitForm()
