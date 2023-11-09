@@ -58,6 +58,10 @@
                         href="{{ route('student.dashboard') }}">
                         My Profile
                     </a>
+                    <a href="{{ route('student.passers') }}"
+                        class="px-2 py-2 text-sm text-gray-500 lg:px-6 md:px-3 hover:text-blue-600">
+                        Passers
+                    </a>
                     <a href="{{ route('student.documents') }}"
                         class="px-2 py-2 text-sm text-gray-500 lg:px-6 md:px-3 hover:text-blue-600">
                         My Documents

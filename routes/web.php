@@ -53,6 +53,9 @@ Route::prefix('student')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/documents', function () {
         return view('student.documents');
     })->name('student.documents');
+    Route::get('/passers', function () {
+        return view('student.passers');
+    })->name('student.passers');
 
 });
 
