@@ -30,7 +30,11 @@ class Profile extends Component implements Tables\Contracts\HasTable
     public $mother_firstname, $mother_middlename, $mother_lastname, $mother_contact;
     public $degree, $year;
 
+    public $edit_modal = false;
+
     use Actions;
+
+    protected $listeners = ['update' => 'render'];
 
     protected function getFormSchema(): array
     {
@@ -142,7 +146,6 @@ class Profile extends Component implements Tables\Contracts\HasTable
         Student::create([
             'user_id' => auth()->user()->id,
             'firstname' => $this->firstname,
-
             'middlename' => $this->middlename,
             'lastname' => $this->lastname,
             'birthdate' => $this->date_of_birth,

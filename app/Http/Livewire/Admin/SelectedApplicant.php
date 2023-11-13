@@ -36,7 +36,7 @@ class SelectedApplicant extends Component implements Tables\Contracts\HasTable
             TextColumn::make('birthdate')->label('BIRTHDATE')->date()->searchable(),
             TextColumn::make('contact')->label('CONTACT')->searchable(),
             TextColumn::make('degree')->label('DEGREE')->searchable(),
-            TextColumn::make('year')->label('YEAR')->searchable(),
+            TextColumn::make('year')->label('YEAR LEVEL')->searchable(),
         ];
 
     }
