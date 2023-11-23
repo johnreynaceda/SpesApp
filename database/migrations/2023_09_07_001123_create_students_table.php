@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
+            $table->foreignId('category_id');
             $table->string('firstname')->nullable();
             $table->string('middlename')->nullable();
             $table->string('lastname')->nullable();
@@ -37,7 +38,6 @@ return new class extends Migration {
             $table->string('mother_contact')->nullable();
             $table->string('degree')->nullable();
             $table->string('year')->nullable();
-            $table->string('status')->default('null');
             $table->timestamps();
         });
     }

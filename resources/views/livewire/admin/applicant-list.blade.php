@@ -7,27 +7,33 @@
                         <dt class="order-2 mt-2 text-lg leading-6 font-medium text-green-500">
                             Approved
                         </dt>
-                        <dd class="order-1 text-5xl font-extrabold text-gray-700">{{ $approved ?? '' }}</dd>
+                        <dd class="order-1 text-5xl font-extrabold text-gray-700">
+                            {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'approved')->count() }}
+                        </dd>
                     </div>
                     <div
                         class="flex flex-col border-t border-b border-gray-100 p-6 text-center sm:border-0 sm:border-l sm:border-r">
                         <dt class="order-2 mt-2 text-lg leading-6 font-medium text-red-500">
                             Disapproved
                         </dt>
-                        <dd class="order-1 text-5xl font-extrabold text-gray-700">{{ $disapproved ?? '' }}</dd>
+                        <dd class="order-1 text-5xl font-extrabold text-gray-700">
+                            {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'declined')->count() }}
+                        </dd>
                     </div>
                     <div class="flex flex-col border-t border-gray-100 p-6 text-center sm:border-0 sm:border-l">
                         <dt class="order-2 mt-2 text-lg leading-6 font-medium text-yellow-500">
-                            Pending
+                            Active
                         </dt>
-                        <dd class="order-1 text-5xl font-extrabold text-gray-700">{{ $pending ?? '' }}</dd>
+                        <dd class="order-1 text-5xl font-extrabold text-gray-700">
+                            {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'active')->count() }}
+                        </dd>
                     </div>
                 </dl>
             </div>
         </div>
     </div>
     <div class="mt-10">
-        {{ $this->table ?? '' }}
+        {{-- {{ $this->table ?? '' }} --}}
     </div>
 
     <x-modal blur wire:model.defer="view_modal" max-width="7xl">

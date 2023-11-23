@@ -62,10 +62,10 @@
                         class="px-2 py-2 text-sm text-gray-500 lg:px-6 md:px-3 hover:text-blue-600">
                         Passers
                     </a>
-                    <a href="{{ route('student.documents') }}"
+                    {{-- <a href="{{ route('student.documents') }}"
                         class="px-2 py-2 text-sm text-gray-500 lg:px-6 md:px-3 hover:text-blue-600">
                         My Documents
-                    </a>
+                    </a> --}}
 
 
                     <div class="inline-flex items-center gap-2 list-none lg:ml-auto">

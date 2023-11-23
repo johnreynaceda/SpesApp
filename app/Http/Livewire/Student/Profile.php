@@ -2,9 +2,11 @@
 
 namespace App\Http\Livewire\Student;
 
+use App\Models\Category;
 use App\Models\Document;
 use App\Models\Passer;
 use App\Models\Student;
+use App\Models\StudentApplication;
 use Livewire\Component;
 use Filament\Tables;
 use Illuminate\Contracts\View\View;
@@ -18,6 +20,7 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use WireUi\Traits\Actions;
+use Filament\Forms\Components\FileUpload;
 
 
 class Profile extends Component implements Tables\Contracts\HasTable
@@ -30,11 +33,27 @@ class Profile extends Component implements Tables\Contracts\HasTable
     public $mother_firstname, $mother_middlename, $mother_lastname, $mother_contact;
     public $degree, $year;
 
+    public $photo, $grade, $document;
+
     public $edit_modal = false;
 
     use Actions;
 
     protected $listeners = ['update' => 'render'];
+
+    public function updatedDateOfBirth()
+    {
+        $age = \Carbon\Carbon::parse($this->date_of_birth)->age;
+        if ($age >= 15 && $age <= 30) {
+
+        } else {
+            $this->dialog()->error(
+                $title = 'Age not Qualified',
+                $description = 'Your age must be between 15 to 30 years old.',
+            );
+        }
+
+    }
 
     protected function getFormSchema(): array
     {
@@ -45,9 +64,9 @@ class Profile extends Component implements Tables\Contracts\HasTable
                     TextInput::make('firstname')->label('First Name')->required(),
                     TextInput::make('middlename')->label('Middle Name'),
                     TextInput::make('lastname')->label('Last Name')->required(),
-                    DatePicker::make('date_of_birth')->label('Birthdate')->required(),
+                    DatePicker::make('date_of_birth')->label('Birthdate')->required()->reactive(),
                     TextInput::make('place_of_birth')->label('Birthplace')->required(),
-                    TextInput::make('contact')->label('Contact')->required(),
+                    TextInput::make('contact')->label('Contact')->required()->numeric()->mask(fn(TextInput\Mask $mask) => $mask->pattern('00000000000')),
                     TextInput::make('email')->label('Email')->email()->required(),
                     TextInput::make('social_account')->label('Social Media Account')->required(),
                     Select::make('status')
@@ -84,7 +103,7 @@ class Profile extends Component implements Tables\Contracts\HasTable
                     TextInput::make('father_firstname')->label('First Name')->required(),
                     TextInput::make('father_middlename')->label('Middle Name'),
                     TextInput::make('father_lastname')->label('Last Name')->required(),
-                    TextInput::make('father_contact')->label('Contact')->required(),
+                    TextInput::make('father_contact')->label('Contact')->required()->numeric()->mask(fn(TextInput\Mask $mask) => $mask->pattern('00000000000')),
 
                 ])
                 ->columns(3),
@@ -93,14 +112,21 @@ class Profile extends Component implements Tables\Contracts\HasTable
                     TextInput::make('mother_firstname')->label('First Name')->required(),
                     TextInput::make('mother_middlename')->label('Middle Name'),
                     TextInput::make('mother_lastname')->label('Last Name')->required(),
-                    TextInput::make('mother_contact')->label('Contact')->required(),
+                    TextInput::make('mother_contact')->label('Contact')->required()->numeric()->mask(fn(TextInput\Mask $mask) => $mask->pattern('00000000000')),
 
                 ])
                 ->columns(3),
             Fieldset::make('EDUCATIONAL STATUS')
                 ->schema([
                     TextInput::make('degree')->label('Degree')->required(),
-                    TextInput::make('year')->label('Year')->required(),
+                    TextInput::make('year')->label('Year Level')->required(),
+                ])
+                ->columns(3),
+            Fieldset::make('UPLOAD DOCUMENTS')
+                ->schema([
+                    FileUpload::make('photo')->required(),
+                    FileUpload::make('grade')->required(),
+                    FileUpload::make('document')->required(),
                 ])
                 ->columns(3),
 
@@ -116,6 +142,7 @@ class Profile extends Component implements Tables\Contracts\HasTable
 
     public function submitForm()
     {
+
         $this->validate([
             'firstname' => 'required',
             'middlename' => 'required',
@@ -143,8 +170,9 @@ class Profile extends Component implements Tables\Contracts\HasTable
             'year' => 'required',
         ]);
 
-        Student::create([
+        $student = Student::create([
             'user_id' => auth()->user()->id,
+            'category_id' => Category::where('is_default', 1)->first()->id,
             'firstname' => $this->firstname,
             'middlename' => $this->middlename,
             'lastname' => $this->lastname,
@@ -171,9 +199,39 @@ class Profile extends Component implements Tables\Contracts\HasTable
             'year' => $this->year,
         ]);
 
-        Document::create([
+
+        $document = Document::create([
             'user_id' => auth()->user()->id,
         ]);
+
+        foreach ($this->photo as $key => $value) {
+            Document::where('user_id', $document->user_id)->update([
+                'photo_path' => $value->store('StudentProfile', 'public'),
+            ]);
+        }
+
+        foreach ($this->grade as $key => $value) {
+            Document::where('user_id', $document->user_id)->update([
+                'valid_id_path' => $value->store('StudentValidId', 'public'),
+            ]);
+        }
+
+        foreach ($this->document as $key => $value) {
+            Document::where('user_id', $document->user_id)->update([
+                'document_path' => $value->store('StudentDocument', 'public'),
+            ]);
+        }
+
+        StudentApplication::create([
+            'student_id' => $student->id,
+            'category_id' => Category::where('is_default', 1)->first()->id,
+        ]);
+
+        sleep(2);
+        $this->dialog()->success(
+            $title = 'Submit Successfully',
+            $description = 'Your data has been submitted',
+        );
 
 
 
@@ -181,35 +239,22 @@ class Profile extends Component implements Tables\Contracts\HasTable
 
     public function submitApplication()
     {
-
-        $if_not_null = Document::where('user_id', auth()->user()->id)->where(function ($query) {
-            $query->whereNotNull('photo_path')
-                ->whereNotNull('valid_id_path')
-                ->whereNotNull('document_path');
-        })->get();
-
-        if ($if_not_null->count() > 0) {
-            $data = Student::where('user_id', auth()->user()->id)->first();
-            $data->update([
-                'status' => 'pending',
+        $data = StudentApplication::where('student_id', auth()->user()->student->id)->where('category_id', Category::where('is_default', 1)->first()->id);
+        if ($data->count() == 0) {
+            StudentApplication::create([
+                'student_id' => auth()->user()->student->id,
+                'category_id' => Category::where('is_default', 1)->first()->id,
             ]);
-            $this->dialog()->success(
-                $title = 'Submit Successfully',
-                $description = 'Your data has been submitted',
-            );
         } else {
-            $data = Student::where('user_id', auth()->user()->id)->first();
-
-            $this->dialog()->error(
-                $title = 'Submit not Applicable',
-                $description = 'Please upload the requirements first.',
-            );
-
-
-
-
+            $data->first()->update([
+                'status' => 'active',
+                'decline_note' => null,
+            ]);
         }
-
-
+        sleep(3);
+        $this->dialog()->success(
+            $title = 'Submit Successfully',
+            $description = 'Your data has been submitted',
+        );
     }
 }

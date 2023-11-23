@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Category;
 use App\Models\Passer;
+use App\Models\StudentApplication;
 use Livewire\Component;
 use App\Models\Student;
 use Filament\Tables;
@@ -12,10 +14,13 @@ use Illuminate\Database\Eloquent\Collection;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
+use WireUi\Traits\Actions;
+
 
 class PassersList extends Component implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
+    use Actions;
     public function render()
     {
         return view('livewire.admin.passers-list');
@@ -23,7 +28,11 @@ class PassersList extends Component implements Tables\Contracts\HasTable
 
     protected function getTableQuery(): Builder
     {
-        return Passer::query();
+        return Passer::query()->whereHas('student', function ($record) {
+            $record->whereHas('student_applicants', function ($applicants) {
+                return $applicants->where('status', 'passed')->where('category_id', Category::where('is_default', 1)->first()->id);
+            });
+        });
     }
 
     protected function getTableColumns(): array
@@ -41,32 +50,28 @@ class PassersList extends Component implements Tables\Contracts\HasTable
     protected function getTableHeaderActions(): array
     {
         return [
-            Action::make('add Passer')->color('success')->label('Add Passer')->button()->icon('heroicon-o-document-text')->action(
+            Action::make('Generate_passer')->color('success')->label('Generate Passer')->button()->icon('heroicon-o-document-text')->action(
                 function ($record, $data) {
-                    foreach ($data['student_id'] as $key => $value) {
+                    $data = StudentApplication::orderBy('score', 'desc')
+                        ->take(80)
+                        ->get();
+
+                    foreach ($data as $key => $value) {
                         Passer::create([
-                            'student_id' => $value
+                            'student_id' => $value->student_id,
+                        ]);
+
+                        StudentApplication::where('student_id', $value->student_id)->where('category_id', Category::where('is_default', 1)->first()->id)->first()->update([
+                            'status' => 'passed'
                         ]);
                     }
+
+                    $this->dialog()->success(
+                        $title = 'Generate Successfully',
+                        $description = 'List of Passers has been generated',
+                    );
                 }
-            )->form(function () {
-
-                return [
-
-                    Select::make('student_id')
-                        ->multiple()
-                        ->options(
-                            Student::whereNotIn('id', Passer::pluck('student_id')->toArray())->where('status', 'approved')->get()->mapWithKeys(
-                                function ($student) {
-                                    return [
-                                        $student->id => $student->firstname . ' ' . $student->lastname,
-                                    ];
-                                }
-                            )
-                        )
-
-                ];
-            }),
+            )
 
         ];
     }

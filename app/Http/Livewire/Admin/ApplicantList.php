@@ -21,7 +21,7 @@ class ApplicantList extends Component implements Tables\Contracts\HasTable
 
     protected function getTableQuery(): Builder
     {
-        return Student::query()->where('status', 'pending');
+        return Student::query()->where('status', 'active');
     }
 
     protected function getTableColumns(): array
@@ -39,33 +39,29 @@ class ApplicantList extends Component implements Tables\Contracts\HasTable
 
     }
 
-    protected function getTableActions(): array
-    {
-        return [
-            Action::make('view')->color('warning')->label('View Records')->button()->icon('heroicon-o-document-text')->action(
-                function ($record) {
-                    $this->applicant_data = $record;
-                    $this->applicant_documents = $record->user->document;
-                    $this->view_modal = true;
-                }
-            ),
-            Action::make('approve')->color('success')->button()->icon('heroicon-o-thumb-up')->action(
-                function ($record) {
-                    $record->update([
-                        'status' => 'approved',
-                    ]);
-                }
-            ),
-            Action::make('disapprove')->color('danger')->button()->icon('heroicon-o-thumb-down'),
-        ];
-    }
+    // protected function getTableActions(): array
+    // {
+    //     return [
+    //         Action::make('view')->color('warning')->label('View Records')->button()->icon('heroicon-o-document-text')->action(
+    //             function ($record) {
+    //                 $this->applicant_data = $record;
+    //                 $this->applicant_documents = $record->user->document;
+    //                 $this->view_modal = true;
+    //             }
+    //         ),
+    //         Action::make('approve')->color('success')->button()->icon('heroicon-o-thumb-up')->action(
+    //             function ($record) {
+    //                 $record->update([
+    //                     'status' => 'approved',
+    //                 ]);
+    //             }
+    //         ),
+    //         Action::make('disapprove')->color('danger')->button()->icon('heroicon-o-thumb-down'),
+    //     ];
+    // }
 
     public function render()
     {
-        return view('livewire.admin.applicant-list', [
-            'approved' => Student::where('status', 'approved')->count(),
-            'disapproved' => Student::where('status', 'disapproved')->count(),
-            'pending' => Student::where('status', 'pending')->count(),
-        ]);
+        return view('livewire.admin.applicant-list');
     }
 }

@@ -41,6 +41,9 @@ Route::prefix('administrator')->middleware(['auth', 'verified'])->group(function
     Route::get('/passers', function () {
         return view('admin.passers');
     })->name('admin.passers');
+    Route::get('/category', function () {
+        return view('admin.category');
+    })->name('admin.category');
 });
 
 

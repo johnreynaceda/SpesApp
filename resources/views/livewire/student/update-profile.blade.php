@@ -1,5 +1,5 @@
 <div>
-    <x-button label="EDIT FORM" right-icon="pencil-alt" wire:click="$set('update_modal', true)" md rounded positive
+    <x-button label="EDIT FORM" right-icon="pencil-alt" sm wire:click="$set('update_modal', true)" md rounded positive
         class="font-semibold" />
 
     <x-modal wire:model.defer="update_modal" max-width="6xl">

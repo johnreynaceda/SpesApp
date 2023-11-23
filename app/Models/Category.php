@@ -5,23 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Category extends Model
 {
     use HasFactory;
-
     protected $guarded = [];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function passer()
-    {
-        return $this->hasOne(Passer::class);
-    }
-
-    public function student_applicants()
+    public function student_applications()
     {
         return $this->hasMany(StudentApplication::class);
     }

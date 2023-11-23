@@ -11,7 +11,15 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="font-bold text-main text-3xl">{{ \App\Models\Document::count() }}</p>
+                    <p class="font-bold text-main text-3xl">
+                        {{ \App\Models\Document::whereHas('user', function ($k) {
+                            $k->whereHas('student', function ($f) {
+                                $f->whereHas('student_applicants', function ($record) {
+                                    $record->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id);
+                                });
+                            });
+                        })->count() }}
+                    </p>
                     <p class="mt-1 text-gray-500">Total Documents</p>
                 </div>
                 <div class="absolute -bottom-5 -right-2">
@@ -32,8 +40,12 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="font-bold text-main text-3xl">{{ \App\Models\Student::count() }}</p>
-                    <p class="mt-1 text-gray-500">Total Applicants</p>
+                    <p class="font-bold text-main text-3xl">
+                        {{ \App\Models\Student::whereHas('student_applicants', function ($record) {
+                            $record->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id);
+                        })->count() }}
+                    </p>
+                    <p class="mt-1 text-gray-500">Total Students</p>
                 </div>
                 <div class="absolute -bottom-5 -right-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"

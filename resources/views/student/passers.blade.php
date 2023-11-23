@@ -20,7 +20,11 @@
                     </tr>
                 </thead>
                 <tbody class="">
-                    @forelse (\App\Models\Passer::all() as $item)
+                    @forelse (\App\Models\Passer::whereHas('student', function ($record) {
+                        $record->whereHas('student_applicants', function ($applicants) {
+                            return $applicants->where('status', 'passed')->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id);
+                        });
+                    }) as $item)
                         <tr>
                             <td class="border border-gray-400  text-gray-700  px-3 py-1">
                                 {{ $item->student->firstname }}

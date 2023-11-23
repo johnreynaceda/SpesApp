@@ -20,7 +20,9 @@ class DocumentList extends Component implements Tables\Contracts\HasTable
     {
         return Document::query()->whereHas('user', function ($record) {
             $record->whereHas('student', function ($k) {
-                $k->where('status', 'approved');
+                $k->whereHas('student_applicants', function ($s) {
+                    $s->whereIn('status', ['approved', 'active', 'passed']);
+                });
             });
         });
     }

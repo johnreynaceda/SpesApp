@@ -17,11 +17,16 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
+use Livewire\WithFileUploads;
 use WireUi\Traits\Actions;
+use Filament\Forms\Components\FileUpload;
+
 
 class UpdateProfile extends Component implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
+
+    use WithFileUploads;
     public $update_modal = false;
 
     public $firstname, $middlename, $lastname, $email, $date_of_birth, $place_of_birth, $contact, $social_account, $status, $gender, $parent_status;
@@ -29,6 +34,8 @@ class UpdateProfile extends Component implements Tables\Contracts\HasTable
     public $father_firstname, $father_middlename, $father_lastname, $father_contact;
     public $mother_firstname, $mother_middlename, $mother_lastname, $mother_contact;
     public $degree, $year;
+
+    public $photo, $grade, $document;
 
     use Actions;
     public function render()
@@ -103,12 +110,20 @@ class UpdateProfile extends Component implements Tables\Contracts\HasTable
                     TextInput::make('year')->label('Year Level')->required()->placeholder(auth()->user()->student->year),
                 ])
                 ->columns(3),
+            Fieldset::make('UPLOAD DOCUMENTS')
+                ->schema([
+                    FileUpload::make('photo')->required(),
+                    FileUpload::make('grade')->required(),
+                    FileUpload::make('document')->required(),
+                ])
+                ->columns(3),
 
         ];
     }
 
     public function submitUpdate()
     {
+
         auth()->user()->student->update([
             'firstname' => $this->firstname != null ? $this->firstname : auth()->user()->student->firstname,
             'middlename' => $this->middlename != null ? $this->middlename : auth()->user()->student->middlename,
@@ -135,6 +150,24 @@ class UpdateProfile extends Component implements Tables\Contracts\HasTable
             'degree' => $this->degree != null ? $this->degree : auth()->user()->student->degree,
             'year' => $this->year != null ? $this->year : auth()->user()->student->year,
         ]);
+
+        if ($this->photo) {
+            foreach ($this->photo as $key => $value) {
+                Document::where('user_id', auth()->user()->id)->update([
+                    'photo_path' => $value->store('StudentPhoto', 'public'),
+                ]);
+            }
+        }
+
+        if ($this->grade) {
+            foreach ($this->grade as $key => $value) {
+                Document::where('user_id', auth()->user()->id)->update([
+                    'valid_id_path' => $value->store('StudentValidId', 'public'),
+                ]);
+            }
+        }
+
+
         $this->update_modal = false;
         $this->emit('update');
         $this->dialog()->success(
