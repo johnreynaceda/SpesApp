@@ -407,7 +407,8 @@
                                     <h1 class="font-medium uppercase">Application Status:</h1>
 
                                     @if (\App\Models\StudentApplication::where('student_id', auth()->user()->student->id)->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->first()->status == 'active')
-                                        <x-badge label="Pending" warning lg rounded />
+                                        <x-badge label="Application received and documents under Evaluation" warning lg
+                                            rounded />
                                     @elseif (
                                         \App\Models\StudentApplication::where('student_id', auth()->user()->student->id)->where(
                                             'category_id',
@@ -751,54 +752,61 @@
                             </div>
                             <div>
                                 <span class="text-sm text-gray-500">Photo</span>
-                                @php
-                                    $data = explode('.', \App\Models\Document::where('user_id', auth()->user()->id)->first()->photo_path);
-                                @endphp
-                                @if ($data[1] == 'png' || $data[1] == 'jpg')
-                                    <img src="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->photo_path) }}"
-                                        class="object-cover h-96 w-full" alt="">
-                                @else
-                                    sdsd
+                                @if (\App\Models\Document::where('user_id', auth()->user()->id)->first()->photo_path != null)
+                                    @php
+                                        $data = explode('.', \App\Models\Document::where('user_id', auth()->user()->id)->first()->photo_path);
+                                    @endphp
+                                    @if ($data[1] == 'png' || $data[1] == 'jpg')
+                                        <img src="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->photo_path) }}"
+                                            class="object-cover h-96 w-full" alt="">
+                                    @else
+                                        sdsd
+                                    @endif
                                 @endif
                             </div>
                             <div>
                                 <span class="text-sm text-gray-500">Grade</span>
-                                @php
-                                    $data = explode('.', \App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path);
-                                @endphp
+                                @if (\App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path != null)
+                                    @php
+                                        $data = explode('.', \App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path);
+                                    @endphp
 
-                                @if ($data[1] == 'png' || $data[1] == 'jpg')
-                                    <img src="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path) }}"
-                                        class="object-cover h-96 w-full" alt="">
-                                @else
-                                    <div class="w-full">
-                                        <a href="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path) }}"
-                                            class="hover:text-green-600" target="_blank">
-                                            <p class="truncate">
-                                                {{ \App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path }}
-                                            </p>
-                                        </a>
-                                    </div>
+                                    @if ($data[1] == 'png' || $data[1] == 'jpg')
+                                        <img src="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path) }}"
+                                            class="object-cover h-96 w-full" alt="">
+                                    @else
+                                        <div class="w-full">
+                                            <a href="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path) }}"
+                                                class="hover:text-green-600" target="_blank">
+                                                <p class="truncate">
+                                                    {{ \App\Models\Document::where('user_id', auth()->user()->id)->first()->valid_id_path }}
+                                                </p>
+                                            </a>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                             <div class="">
                                 <span class="text-sm text-gray-500">Document</span>
-                                @php
-                                    $data = explode('.', \App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path);
-                                @endphp
+                                @if (\App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path != null)
+                                    @php
+                                        $data = explode('.', \App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path);
+                                    @endphp
 
-                                @if ($data[1] == 'png' || $data[1] == 'jpg')
-                                    <img src="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path) }}"
-                                        class="object-cover h-96 w-full" alt="">
-                                @else
-                                    <div class="w-full">
-                                        <a href="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path) }}"
-                                            class="hover:text-green-600" target="_blank">
-                                            <p class="truncate">
-                                                {{ \App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path }}
-                                            </p>
-                                        </a>
-                                    </div>
+                                    @if ($data[1] == 'png' || $data[1] == 'jpg')
+                                        <img src="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path) }}"
+                                            class="object-cover h-96 w-full" alt="">
+                                    @else
+                                        <div class="w-full">
+                                            <a href="{{ Storage::url(\App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path) }}"
+                                                class="hover:text-green-600" target="_blank">
+                                                <p class="truncate">
+                                                    {{ \App\Models\Document::where('user_id', auth()->user()->id)->first()->document_path }}
+                                                </p>
+                                            </a>
+                                        </div>
+                                    @endif
+
                                 @endif
                             </div>
                         </div>

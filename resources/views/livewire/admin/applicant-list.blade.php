@@ -8,7 +8,11 @@
                             Approved
                         </dt>
                         <dd class="order-1 text-5xl font-extrabold text-gray-700">
-                            {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'approved')->count() }}
+                            @if (\App\Models\Category::count() > 0)
+                                {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'approved')->count() ?? 0 }}
+                            @else
+                                0
+                            @endif
                         </dd>
                     </div>
                     <div
@@ -17,7 +21,11 @@
                             Disapproved
                         </dt>
                         <dd class="order-1 text-5xl font-extrabold text-gray-700">
-                            {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'declined')->count() }}
+                            @if (\App\Models\Category::count() > 0)
+                                {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'declined')->count() ?? 0 }}
+                            @else
+                                0
+                            @endif
                         </dd>
                     </div>
                     <div class="flex flex-col border-t border-gray-100 p-6 text-center sm:border-0 sm:border-l">
@@ -25,7 +33,11 @@
                             Active
                         </dt>
                         <dd class="order-1 text-5xl font-extrabold text-gray-700">
-                            {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'active')->count() }}
+                            @if (\App\Models\Category::count() > 0)
+                                {{ \App\Models\StudentApplication::where('category_id', \App\Models\Category::where('is_default', 1)->first()->id)->where('status', 'active')->count() ?? 0 }}
+                            @else
+                                0
+                            @endif
                         </dd>
                     </div>
                 </dl>

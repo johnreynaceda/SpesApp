@@ -12,13 +12,15 @@
                 </div>
                 <div>
                     <p class="font-bold text-main text-3xl">
-                        {{ \App\Models\Document::whereHas('user', function ($k) {
-                            $k->whereHas('student', function ($f) {
-                                $f->whereHas('student_applicants', function ($record) {
-                                    $record->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id);
+                        @if (\App\Models\Category::count() > 0)
+                            {{ \App\Models\Document::whereHas('user', function ($k) {
+                                $k->whereHas('student', function ($f) {
+                                    $f->whereHas('student_applicants', function ($record) {
+                                        $record->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id);
+                                    });
                                 });
-                            });
-                        })->count() }}
+                            })->count() }}
+                        @endif
                     </p>
                     <p class="mt-1 text-gray-500">Total Documents</p>
                 </div>
@@ -41,9 +43,11 @@
                 </div>
                 <div>
                     <p class="font-bold text-main text-3xl">
-                        {{ \App\Models\Student::whereHas('student_applicants', function ($record) {
-                            $record->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id);
-                        })->count() }}
+                        @if (App\Models\Category::count() > 0)
+                            {{ \App\Models\Student::whereHas('student_applicants', function ($record) {
+                                $record->where('category_id', \App\Models\Category::where('is_default', 1)->first()->id);
+                            })->count() }}
+                        @endif
                     </p>
                     <p class="mt-1 text-gray-500">Total Students</p>
                 </div>
