@@ -153,7 +153,7 @@ class SelectedApplicant extends Component implements Tables\Contracts\HasTable
                     ),
                 Action::make('Add Score')->icon('heroicon-o-external-link')->visible(
                     function ($record) {
-                        return $record->score == null;
+                        return $record->score == null && $record->status == 'approved';
                     }
                 )->action(
                         function ($record, $data) {

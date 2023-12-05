@@ -38,7 +38,10 @@
 
                         @endphp
                         @if ($data[1] == 'png' || $data[1] == 'jpg')
-                            <img src="{{ Storage::url($grade) }}" class="h-40 object-cover w-40" alt="">
+                            <a href="{{ Storage::url($grade) }}" target="_blank">
+                                <img src="{{ Storage::url($grade) }}"
+                                    class=" group-hover:scale-95 h-40 object-cover w-40" alt="">
+                            </a>
                         @else
                             <a href="{{ Storage::url($grade) }}" class="hover:text-green-600" target="_blank">
                                 <p class="truncate">
@@ -57,7 +60,10 @@
 
                         @endphp
                         @if ($data[1] == 'png' || $data[1] == 'jpg')
-                            <img src="{{ Storage::url($document) }}" class="h-40 object-cover w-40" alt="">
+                            <a href="{{ Storage::url($document) }}" target="_blank">
+                                <img src="{{ Storage::url($document) }}"
+                                    class=" group-hover:scale-95 h-40 object-cover w-40" alt="">
+                            </a>
                         @else
                             <a href="{{ Storage::url($document) }}" class="hover:text-green-600" target="_blank">
                                 <p class="truncate">

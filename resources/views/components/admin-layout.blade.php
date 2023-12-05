@@ -169,6 +169,22 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a class="{{ request()->routeIs('admin.denied-list') ? 'bg-white text-gray-600 fill-gray-600 scale-95' : 'text-white fill-white' }} inline-flex items-center w-full px-4 py-2 mt-1   transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-100 hover:scale-95 hover:text-gray-600 hover:fill-gray-600"
+                                        href="{{ route('admin.denied-list') }}">
+                                        {{-- <ion-icon class="w-4 h-4 md hydrated" name="aperture-outline" role="img"
+                                            aria-label="aperture outline"></ion-icon> --}}
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            class="w-5 h-5 md hydrated">
+                                            <path
+                                                d="M21 8V20.9932C21 21.5501 20.5552 22 20.0066 22H3.9934C3.44495 22 3 21.556 3 21.0082V2.9918C3 2.45531 3.4487 2 4.00221 2H14.9968L21 8ZM19 9H14V4H5V20H19V9ZM8 7H11V9H8V7ZM8 11H16V13H8V11ZM8 15H16V17H8V15Z">
+                                            </path>
+                                        </svg>
+                                        <span class="ml-2">
+                                            Denied List
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="{{ request()->routeIs('admin.reports') ? 'bg-white text-gray-600 fill-gray-600 scale-95' : 'text-white fill-white' }} inline-flex items-center w-full px-4 py-2 mt-1   transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-100 hover:scale-95 hover:text-gray-600 hover:fill-gray-600"
                                         href="{{ route('admin.reports') }}">
                                         {{-- <ion-icon class="w-4 h-4 md hydrated" name="aperture-outline" role="img"
@@ -211,7 +227,8 @@
                                                     <div class="flex items-center">
                                                         <a href="#"
                                                             class="inline-flex items-center text-sm font-medium text-gray-500 duration-200 hover:text-gray-700 hover:scale-95">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 24 24"
                                                                 class="flex-shrink-0 w-4 h-4 md hydrated fill-gray-500">
                                                                 <path
                                                                     d="M13 18.9997H19V9.97791L12 4.53346L5 9.97791V18.9997H11V12.9997H13V18.9997ZM21 19.9997C21 20.552 20.5523 20.9997 20 20.9997H4C3.44772 20.9997 3 20.552 3 19.9997V9.48882C3 9.18023 3.14247 8.88893 3.38606 8.69947L11.3861 2.47725C11.7472 2.19639 12.2528 2.19639 12.6139 2.47725L20.6139 8.69947C20.8575 8.88893 21 9.18023 21 9.48882V19.9997Z">
